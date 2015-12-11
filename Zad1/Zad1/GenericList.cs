@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace Zad1
 {
-    public class IntegerList : IIntegerList
+    class GenericList<X> : IGenericList<X>
     {
         /// <summary>
-        /// The actual storage for IntegerList.
+        /// The actual storage for GenericList.
         /// </summary>
-        private int[] _internalStorage;
+        private X[] _internalStorage;
         /// <summary>
-        /// Size with which the IntegerList was inititated.
+        /// Size with which the GenericList was inititated.
         /// </summary>
         private int _initialSize;
         /// <summary>
@@ -28,22 +29,21 @@ namespace Zad1
             }
         }
         /// <summary>
-        /// Default constructor for IntegerList which initiates list with capacity of 4.
+        /// Default constructor for GenericList which initiates list with capacity of 4.
         /// </summary>
-        public IntegerList() : this(4)
+        public GenericList() : this(4)
         {
         }
         /// <summary>
-        /// Constructor for IntegerList which initiates list with specified capacity.
+        /// Constructor for GenericList which initiates list with specified capacity.
         /// </summary>
-        public IntegerList(int initialSize)
+        public GenericList(int initialSize)
         {
             _initialSize = initialSize;
             _size = 0;
-            _internalStorage = new int[initialSize];
+            _internalStorage = new X[initialSize];
         }
-
-        public void Add(int item)
+        public void Add(X item)
         {
             if (_size == _internalStorage.Length)
             {
@@ -52,28 +52,26 @@ namespace Zad1
             _internalStorage[_size] = item;
             _size++;
         }
-
         private void rearrange()
         {
-            int[] temp = new int[_internalStorage.Length * 2];
-            for(int i = 0; i < _internalStorage.Length; i++)
+            X[] temp = new X[_internalStorage.Length * 2];
+            for (int i = 0; i < _internalStorage.Length; i++)
             {
                 temp[i] = _internalStorage[i];
             }
             _internalStorage = temp;
         }
-
         public void Clear()
         {
-            _internalStorage = new int[_initialSize];
+            _internalStorage = new X[_initialSize];
             _size = 0;
         }
 
-        public bool Contains(int item)
+        public bool Contains(X item)
         {
-            for(int i = 0; i < _internalStorage.Length; i++)
+            for (int i = 0; i < _internalStorage.Length; i++)
             {
-                if(_internalStorage[i] == item)
+                if (_internalStorage[i].Equals(item))
                 {
                     return true;
                 }
@@ -81,20 +79,20 @@ namespace Zad1
             return false;
         }
 
-        public int GetElement(int index)
+        public X GetElement(int index)
         {
-            if(index > _size - 1)
+            if (index > _size - 1)
             {
                 throw new IndexOutOfRangeException("The specified index is not in range");
             }
             return _internalStorage[index];
         }
 
-        public int IndexOf(int item)
+        public int IndexOf(X item)
         {
             for (int i = 0; i < _internalStorage.Length; i++)
             {
-                if (_internalStorage[i] == item)
+                if (_internalStorage[i].Equals(item))
                 {
                     return i;
                 }
@@ -102,11 +100,11 @@ namespace Zad1
             return -1;
         }
 
-        public bool Remove(int item)
+        public bool Remove(X item)
         {
             for (int i = 0; i < _internalStorage.Length; i++)
             {
-                if (_internalStorage[i] == item)
+                if (_internalStorage[i].Equals(item))
                 {
                     moveOneLeft(i);
                     return true;
@@ -120,7 +118,7 @@ namespace Zad1
         /// </summary>
         private void moveOneLeft(int index)
         {
-            for(int i = index; i < _size; i++)
+            for (int i = index; i < _size; i++)
             {
                 _internalStorage[i] = _internalStorage[i + 1];
             }
@@ -135,6 +133,61 @@ namespace Zad1
             }
             moveOneLeft(index);
             return true;
+        }
+
+        public IEnumerator<X> GetEnumerator()
+        {
+            return new GenericListEnumerator<X>(this);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        private class GenericListEnumerator<X> : IEnumerator<X>
+        {
+            private GenericList<X> genericList;
+            private int _current;
+
+            public GenericListEnumerator(GenericList<X> genericList)
+            {
+                this.genericList = genericList;
+                _current = 0;
+            }
+
+            public X Current
+            {
+                get
+                {
+                    _current++;
+                    return genericList.GetElement(_current-1);
+                }
+            }
+
+            object IEnumerator.Current
+            {
+                get { return Current; }
+            }
+
+            public void Dispose()
+            {
+                //igrnored
+            }
+
+            public bool MoveNext()
+            {
+                if(_current < genericList.Count)
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            public void Reset()
+            {
+                //ignored
+            }
         }
     }
 }
