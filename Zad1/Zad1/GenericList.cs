@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Zad1
 {
-    class GenericList<X> : IGenericList<X>
+    public class GenericList<X> : IGenericList<X>
     {
         /// <summary>
         /// The actual storage for GenericList.
