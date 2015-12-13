@@ -49,7 +49,7 @@ namespace PongGame
 
             graphics = new GraphicsDeviceManager(this)
             {
-                PreferredBackBufferHeight = 500,
+                PreferredBackBufferHeight = 900,
                 PreferredBackBufferWidth = 500
             };
         }
@@ -84,7 +84,7 @@ namespace PongGame
             PaddleBottom = new Paddle(paddleTexture);
             PaddleTop = new Paddle(paddleTexture);
             // Position both paddles with help screenBounds object
-            PaddleBottom.Position = new Vector2(250 - PaddleBottom.Size.Width/2, 480);
+            PaddleBottom.Position = new Vector2(250 - PaddleBottom.Size.Width/2, 880);
             PaddleTop.Position = new Vector2(250 - PaddleTop.Size.Width / 2, 0);
             // Load ball texture
             Texture2D ballTexture = Content.Load<Texture2D>("ball");
